@@ -56,7 +56,7 @@ int main()
 	*p = 10;
 	current_thread->initial_argument = p;
 	thread_start(inactive_thread,current_thread);
-	for(int j=0;j<6;++j)
+	for(int j=0;j<5;++j)
 	{
 		printf("inside main thread %d\n",j);
 		yield();
