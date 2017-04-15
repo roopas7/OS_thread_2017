@@ -1,0 +1,17 @@
+REPORT :
+
+I wrote the code for context switching as per the instruction given. 
+Basically, the context switching involves creation of threads ,thread_start and thread_switch which is in assembly language code. This has to be written in assembly language code because it involves editing register values. Every thread has its own TCB and its context includes stack and registers of its own. I created all these things in the project 1.
+
+Testing :
+
+I wrote for loop both in main thread and child thread and called yield function in side the loop. When i ran this i got alternate debug statement. which shows that context switch is happening. when child thread made to terminate before main thread it crashed.
+
+
+DISCUSSION :
+
+1. Elegant way might be creating a data structure like array or linked lists for managing arbitrary number of threads.
+
+3. Thread's stack and TCB can be released soon after the thread finishes executing and after the yield call(in this project case). thread switch pushes the current thread's  context to the stack and retrives previous thread's context. If we try to end the stack or tcb during or before yield call the program crashes. Because there you will try to write in to the memory location that is deleted.
+
+In case of thread join procedure, we can free the stack soon after the thread finishes its execution. but have to retain the TCB until the thread's status is returned to the join procedure .Because the status of the thread is stored in tcb.  
