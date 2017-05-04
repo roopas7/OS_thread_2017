@@ -1,0 +1,22 @@
+REPORT :
+
+I wrote the code for the scheduler as per the instructions.
+The scheduler manages arbitrary number of threads using a queue and context switches in a round robin fashion. In addition, the scheduler_end routine takes care of completion of partially completed threads when the main thread ends.
+
+Testing :
+
+I used the sample code provided for testing. I believed it was comprehensive since it yields multiple times exercising all the features of the scheduler
+
+DISCUSSION :
+
+1. Elegant way to do memory reclamation. Avoidance of excessive allocation and deallocation
+
+Currently, there is no safe way to deallocate memory from the finished threads. This is because, we do not have a separate queue for finished threads. We cannot reallocate threads during yield because thread_switch relies on the presence of the old thread's stack being alive. 
+An efficient way to do memory reclamation is to have a separate queue for finished threads and use that to deallocate memory after scheduler_end. Allocation and deallocation of memory happens when a thread is created. One alternative is to allocate a big chunk of memory beforehand and divide it among the threads on a need basis. In this way, allocation and deallocation would happen only once. 
+
+2. When executing scheduler code, which thread are we running in. At what time can we say we have stopped running one thread and started another thread
+There is always a thread running in the scheduler code. thread_switch is when switching of threads happen ie; inside the assembly code. Specifically, when the program counter is set to that of the new thread. 
+
+3. what other functionality will be useful in the threading api. What multithreading application can we not write with this interface
+
+We do not have a mode to join threads. Locks are a useful feature to enable simultaneous access of shared data. 
