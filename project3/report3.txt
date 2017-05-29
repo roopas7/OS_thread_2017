@@ -1,0 +1,8 @@
+In class, we've talked about how to synchronize in in a cooperative multi-threaded environment. Specifically, we've said that not yielding (or calling a function that yields) in a critical section is just like acquiring a lock for that critical section. Is this still true?
+
+This is not true, because we are calling asynchronous IO. This means that two kernel threads could be running simultaneously. In our case, the read buffer could be modified by two threads. 
+
+Briefly discuss a potential design for a scheduler that uses asynchronous software interrupts (signals) and true blocking instead of polling and busy-waiting to handle notification of I/O completion. What information should be passed to the signal handler? What information should the signal handler manipulate? Signals turn your scheduler into a concurrent program. Where do we have to look out for problems such as race conditions, deadlock, etc?
+
+We need to have a separate queue to handle blocked threads. It can be more easily implemented using conditional variables where this thread waits for a signal. The signal handler should wake up this particular thread and enqueue it to ready list. 
+I am not sure what will cause race conditions here.
