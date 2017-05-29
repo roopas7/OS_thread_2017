@@ -1,0 +1,42 @@
+#include<stdio.h>
+#include <stdlib.h>
+
+#define STACK_SIZE 1024*1024
+
+int factorial(int n) {
+  return n == 0 ? 1 : n * factorial(n-1);
+}
+
+void fun_with_threads(void * arg) {                                              
+  int n = *(int*) arg;
+  printf("%d! = %d\n", n, factorial(n));                                   
+}
+
+void thread_switch(struct thread * old, struct thread * new);
+
+struct thread *current_thread = 0;
+struct thread* inactive_thread = 0;
+
+
+void thread_start(struct thread * old, struct thread * new);
+
+
+int main()
+{
+  current_thread = malloc(sizeof(*current_thread));
+  inactive_thread = malloc(sizeof(*inactive_thread));
+  current_thread->initial_function = fun_with_threads;
+  int * p = malloc(sizeof(int));
+  *p = 5;
+   current_thread->initial_argument = p;
+  current_thread->stack_pointer = malloc(STACK_SIZE) + STACK_SIZE;
+  thread_start(inactive_thread, current_thread);
+  for (int i=0;i<4;++i) {
+    printf("in main thread. Loop iteration: %d\n",i);
+    yield();
+ }
+ free(p);
+ free(current_thread);
+ free(inactive_thread);
+  return 0;
+} 
